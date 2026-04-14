@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "concesionarias",
+  "info": {
+    "singularName": "concesionaria",
+    "pluralName": "concesionarias",
+    "displayName": "Concesionaria"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Ciudad": {
+      "type": "string"
+    },
+    "Estado": {
+      "type": "string"
+    },
+    "nombre": {
+      "type": "string"
+    },
+    "direccion": {
+      "type": "string"
+    },
+    "telefono": {
+      "type": "string"
+    },
+    "contacto": {
+      "type": "email"
+    },
+    "vehiculos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::vehiculo.vehiculo",
+      "mappedBy": "concesionaria"
+    }
+  }
+}

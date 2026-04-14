@@ -563,6 +563,76 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiClienteCliente extends Struct.CollectionTypeSchema {
+  collectionName: 'clientes';
+  info: {
+    displayName: 'Cliente';
+    pluralName: 'clientes';
+    singularName: 'cliente';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    correo: Schema.Attribute.Email &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    direccion: Schema.Attribute.String;
+    fecha_registro: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::cliente.cliente'
+    > &
+      Schema.Attribute.Private;
+    nombre: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    Telefono: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    ventas: Schema.Attribute.Relation<'oneToMany', 'api::venta.venta'>;
+  };
+}
+
+export interface ApiConcesionariaConcesionaria
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'concesionarias';
+  info: {
+    displayName: 'Concesionaria';
+    pluralName: 'concesionarias';
+    singularName: 'concesionaria';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Ciudad: Schema.Attribute.String;
+    contacto: Schema.Attribute.Email;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    direccion: Schema.Attribute.String;
+    Estado: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::concesionaria.concesionaria'
+    > &
+      Schema.Attribute.Private;
+    nombre: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    telefono: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    vehiculos: Schema.Attribute.Relation<'oneToMany', 'api::vehiculo.vehiculo'>;
+  };
+}
+
 export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   collectionName: 'globals';
   info: {
@@ -592,6 +662,104 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiVehiculoVehiculo extends Struct.CollectionTypeSchema {
+  collectionName: 'vehiculos';
+  info: {
+    displayName: 'Vehiculo';
+    pluralName: 'vehiculos';
+    singularName: 'vehiculo';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    color: Schema.Attribute.String;
+    concesionaria: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::concesionaria.concesionaria'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descripcion: Schema.Attribute.Blocks;
+    estatus: Schema.Attribute.Enumeration<
+      ['vendido ', 'apartado ', 'disponible']
+    >;
+    Imagen: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    kilometraje: Schema.Attribute.BigInteger &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: '0';
+        },
+        string
+      >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::vehiculo.vehiculo'
+    > &
+      Schema.Attribute.Private;
+    marca: Schema.Attribute.String;
+    modelo: Schema.Attribute.String;
+    nombre: Schema.Attribute.String & Schema.Attribute.Required;
+    precio: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    tipo: Schema.Attribute.Enumeration<
+      ['sedan', 'pickup', 'suv', 'hatchback', 'van', 'coupe']
+    >;
+    transmision: Schema.Attribute.Enumeration<['manual', 'autommatica']>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    ventas: Schema.Attribute.Relation<'oneToMany', 'api::venta.venta'>;
+  };
+}
+
+export interface ApiVentaVenta extends Struct.CollectionTypeSchema {
+  collectionName: 'ventas';
+  info: {
+    displayName: 'Venta';
+    pluralName: 'ventas';
+    singularName: 'venta';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    cantidad: Schema.Attribute.BigInteger;
+    cliente: Schema.Attribute.Relation<'manyToOne', 'api::cliente.cliente'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    estatus: Schema.Attribute.Enumeration<
+      ['pendiente', 'completada', 'cancelada']
+    >;
+    fecha: Schema.Attribute.Date & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::venta.venta'> &
+      Schema.Attribute.Private;
+    metodo_pago: Schema.Attribute.Enumeration<
+      ['efectivo', 'tarjeta ', 'financiamiento']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    total: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    vehiculo: Schema.Attribute.Relation<'manyToOne', 'api::vehiculo.vehiculo'>;
   };
 }
 
@@ -1110,7 +1278,11 @@ declare module '@strapi/strapi' {
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
       'api::category.category': ApiCategoryCategory;
+      'api::cliente.cliente': ApiClienteCliente;
+      'api::concesionaria.concesionaria': ApiConcesionariaConcesionaria;
       'api::global.global': ApiGlobalGlobal;
+      'api::vehiculo.vehiculo': ApiVehiculoVehiculo;
+      'api::venta.venta': ApiVentaVenta;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

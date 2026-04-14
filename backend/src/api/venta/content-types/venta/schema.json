@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ventas",
+  "info": {
+    "singularName": "venta",
+    "pluralName": "ventas",
+    "displayName": "Venta"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "fecha": {
+      "type": "date",
+      "required": true
+    },
+    "total": {
+      "type": "decimal",
+      "required": true
+    },
+    "estatus": {
+      "type": "enumeration",
+      "enum": [
+        "pendiente",
+        "completada",
+        "cancelada"
+      ]
+    },
+    "metodo_pago": {
+      "type": "enumeration",
+      "enum": [
+        "efectivo",
+        "tarjeta ",
+        "financiamiento"
+      ]
+    },
+    "cliente": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::cliente.cliente",
+      "inversedBy": "ventas"
+    },
+    "vehiculo": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::vehiculo.vehiculo",
+      "inversedBy": "ventas"
+    },
+    "cantidad": {
+      "type": "biginteger"
+    }
+  }
+}

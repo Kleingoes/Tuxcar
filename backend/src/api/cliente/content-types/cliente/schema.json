@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "clientes",
+  "info": {
+    "singularName": "cliente",
+    "pluralName": "clientes",
+    "displayName": "Cliente"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre": {
+      "type": "string"
+    },
+    "correo": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "Telefono": {
+      "type": "string"
+    },
+    "direccion": {
+      "type": "string"
+    },
+    "fecha_registro": {
+      "type": "datetime"
+    },
+    "ventas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::venta.venta",
+      "mappedBy": "cliente"
+    }
+  }
+}
