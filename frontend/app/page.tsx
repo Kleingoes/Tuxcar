@@ -1,4 +1,4 @@
-import Navbar from "@/components/nabvar";
+import Navbar from "@/components/navbar";
 import { getVehiculos } from "@/lib/api";
 
 export default async function Home() {
