@@ -4,7 +4,7 @@
   "info": {
     "singularName": "cliente",
     "pluralName": "clientes",
-    "displayName": "Cliente"
+    "displayName": "cliente"
   },
   "options": {
     "draftAndPublish": true
@@ -33,6 +33,13 @@
       "relation": "oneToMany",
       "target": "api::venta.venta",
       "mappedBy": "cliente"
+    },
+    "tipo": {
+      "type": "enumeration",
+      "enum": [
+        "empresa",
+        "individual"
+      ]
     }
   }
 }

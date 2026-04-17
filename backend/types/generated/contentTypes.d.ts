@@ -566,7 +566,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
 export interface ApiClienteCliente extends Struct.CollectionTypeSchema {
   collectionName: 'clientes';
   info: {
-    displayName: 'Cliente';
+    displayName: 'cliente';
     pluralName: 'clientes';
     singularName: 'cliente';
   };
@@ -591,6 +591,7 @@ export interface ApiClienteCliente extends Struct.CollectionTypeSchema {
     nombre: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     Telefono: Schema.Attribute.String;
+    tipo: Schema.Attribute.Enumeration<['empresa', 'individual']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -610,12 +611,13 @@ export interface ApiConcesionariaConcesionaria
     draftAndPublish: true;
   };
   attributes: {
-    Ciudad: Schema.Attribute.String;
+    ciudad: Schema.Attribute.String;
     contacto: Schema.Attribute.Email;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     direccion: Schema.Attribute.String;
+    empleados: Schema.Attribute.Relation<'oneToMany', 'api::empleado.empleado'>;
     Estado: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -625,11 +627,54 @@ export interface ApiConcesionariaConcesionaria
       Schema.Attribute.Private;
     nombre: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    refaccions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::refaccion.refaccion'
+    >;
     telefono: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     vehiculos: Schema.Attribute.Relation<'oneToMany', 'api::vehiculo.vehiculo'>;
+  };
+}
+
+export interface ApiEmpleadoEmpleado extends Struct.CollectionTypeSchema {
+  collectionName: 'empleados';
+  info: {
+    displayName: 'empleado';
+    pluralName: 'empleados';
+    singularName: 'empleado';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    activo: Schema.Attribute.Boolean;
+    concesionaria: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::concesionaria.concesionaria'
+    >;
+    correo: Schema.Attribute.Email;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    fecha_ingreso: Schema.Attribute.Date;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::empleado.empleado'
+    > &
+      Schema.Attribute.Private;
+    nombre: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    puesto: Schema.Attribute.Enumeration<
+      ['vendedor', 'gerente', 'mecanico', 'administrativo']
+    >;
+    telefono: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -665,6 +710,50 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiRefaccionRefaccion extends Struct.CollectionTypeSchema {
+  collectionName: 'refaccions';
+  info: {
+    displayName: 'refaccion ';
+    pluralName: 'refaccions';
+    singularName: 'refaccion';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    categoria: Schema.Attribute.Enumeration<
+      ['motor', 'frenos', 'suspension', 'electrico', 'carroceria', 'otro']
+    >;
+    concesionaria: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::concesionaria.concesionaria'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descripcion: Schema.Attribute.Blocks;
+    Imagen: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::refaccion.refaccion'
+    > &
+      Schema.Attribute.Private;
+    marca: Schema.Attribute.String;
+    nombre: Schema.Attribute.String & Schema.Attribute.Required;
+    numero_refaccion: Schema.Attribute.String;
+    precio: Schema.Attribute.BigInteger & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    stock: Schema.Attribute.BigInteger & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiVehiculoVehiculo extends Struct.CollectionTypeSchema {
   collectionName: 'vehiculos';
   info: {
@@ -676,7 +765,11 @@ export interface ApiVehiculoVehiculo extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    anio: Schema.Attribute.BigInteger;
     color: Schema.Attribute.String;
+    combustible: Schema.Attribute.Enumeration<
+      ['diesel', 'hibrido', 'gasolina']
+    >;
     concesionaria: Schema.Attribute.Relation<
       'manyToOne',
       'api::concesionaria.concesionaria'
@@ -685,8 +778,9 @@ export interface ApiVehiculoVehiculo extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     descripcion: Schema.Attribute.Blocks;
+    disponible: Schema.Attribute.Boolean;
     estatus: Schema.Attribute.Enumeration<
-      ['vendido ', 'apartado ', 'disponible']
+      ['vendido', 'apartado', 'disponible']
     >;
     Imagen: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     kilometraje: Schema.Attribute.BigInteger &
@@ -706,6 +800,7 @@ export interface ApiVehiculoVehiculo extends Struct.CollectionTypeSchema {
     marca: Schema.Attribute.String;
     modelo: Schema.Attribute.String;
     nombre: Schema.Attribute.String & Schema.Attribute.Required;
+    numero_serie: Schema.Attribute.String;
     precio: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.Unique &
@@ -717,10 +812,11 @@ export interface ApiVehiculoVehiculo extends Struct.CollectionTypeSchema {
       > &
       Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
+    puertas: Schema.Attribute.Integer;
     tipo: Schema.Attribute.Enumeration<
       ['sedan', 'pickup', 'suv', 'hatchback', 'van', 'coupe']
     >;
-    transmision: Schema.Attribute.Enumeration<['manual', 'autommatica']>;
+    transmision: Schema.Attribute.Enumeration<['manual', 'automatica']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -754,6 +850,7 @@ export interface ApiVentaVenta extends Struct.CollectionTypeSchema {
     metodo_pago: Schema.Attribute.Enumeration<
       ['efectivo', 'tarjeta ', 'financiamiento']
     >;
+    notas: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
     total: Schema.Attribute.Decimal & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
@@ -1280,7 +1377,9 @@ declare module '@strapi/strapi' {
       'api::category.category': ApiCategoryCategory;
       'api::cliente.cliente': ApiClienteCliente;
       'api::concesionaria.concesionaria': ApiConcesionariaConcesionaria;
+      'api::empleado.empleado': ApiEmpleadoEmpleado;
       'api::global.global': ApiGlobalGlobal;
+      'api::refaccion.refaccion': ApiRefaccionRefaccion;
       'api::vehiculo.vehiculo': ApiVehiculoVehiculo;
       'api::venta.venta': ApiVentaVenta;
       'plugin::content-releases.release': PluginContentReleasesRelease;

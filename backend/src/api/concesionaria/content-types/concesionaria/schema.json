@@ -11,7 +11,7 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Ciudad": {
+    "ciudad": {
       "type": "string"
     },
     "Estado": {
@@ -33,6 +33,18 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::vehiculo.vehiculo",
+      "mappedBy": "concesionaria"
+    },
+    "refaccions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::refaccion.refaccion",
+      "mappedBy": "concesionaria"
+    },
+    "empleados": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::empleado.empleado",
       "mappedBy": "concesionaria"
     }
   }

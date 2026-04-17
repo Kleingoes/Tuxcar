@@ -49,6 +49,9 @@
     },
     "cantidad": {
       "type": "biginteger"
+    },
+    "notas": {
+      "type": "text"
     }
   }
 }

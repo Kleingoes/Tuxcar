@@ -58,14 +58,14 @@
       "type": "enumeration",
       "enum": [
         "manual",
-        "autommatica"
+        "automatica"
       ]
     },
     "estatus": {
       "type": "enumeration",
       "enum": [
-        "vendido ",
-        "apartado ",
+        "vendido",
+        "apartado",
         "disponible"
       ]
     },
@@ -87,6 +87,28 @@
       "unique": true,
       "default": 0,
       "min": 0
+    },
+    "anio": {
+      "type": "biginteger"
+    },
+    "numero_serie": {
+      "type": "string",
+      "required": false,
+      "unique": false
+    },
+    "combustible": {
+      "type": "enumeration",
+      "enum": [
+        "diesel",
+        "hibrido",
+        "gasolina"
+      ]
+    },
+    "puertas": {
+      "type": "integer"
+    },
+    "disponible": {
+      "type": "boolean"
     }
   }
 }

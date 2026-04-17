@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "empleados",
+  "info": {
+    "singularName": "empleado",
+    "pluralName": "empleados",
+    "displayName": "empleado"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre": {
+      "type": "string",
+      "required": true
+    },
+    "puesto": {
+      "type": "enumeration",
+      "enum": [
+        "vendedor",
+        "gerente",
+        "mecanico",
+        "administrativo"
+      ]
+    },
+    "telefono": {
+      "type": "string"
+    },
+    "correo": {
+      "type": "email"
+    },
+    "fecha_ingreso": {
+      "type": "date"
+    },
+    "activo": {
+      "type": "boolean"
+    },
+    "concesionaria": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::concesionaria.concesionaria",
+      "inversedBy": "empleados"
+    }
+  }
+}
