@@ -563,6 +563,48 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCitaCita extends Struct.CollectionTypeSchema {
+  collectionName: 'citas';
+  info: {
+    displayName: 'Cita';
+    pluralName: 'citas';
+    singularName: 'cita';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    cliente: Schema.Attribute.Relation<'manyToOne', 'api::cliente.cliente'>;
+    concesionaria: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::concesionaria.concesionaria'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    empleado: Schema.Attribute.Relation<'manyToOne', 'api::empleado.empleado'>;
+    estatus: Schema.Attribute.Enumeration<
+      ['programada', 'completada', 'cancelada', 'no_asistio']
+    > &
+      Schema.Attribute.DefaultTo<'programada'>;
+    fecha: Schema.Attribute.Date & Schema.Attribute.Required;
+    hora: Schema.Attribute.Time & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::cita.cita'> &
+      Schema.Attribute.Private;
+    notas: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    tipo: Schema.Attribute.Enumeration<
+      ['test_drive', 'servicio', 'consulta', 'entrega']
+    > &
+      Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    vehiculo: Schema.Attribute.Relation<'manyToOne', 'api::vehiculo.vehiculo'>;
+  };
+}
+
 export interface ApiClienteCliente extends Struct.CollectionTypeSchema {
   collectionName: 'clientes';
   info: {
@@ -639,6 +681,45 @@ export interface ApiConcesionariaConcesionaria
   };
 }
 
+export interface ApiCotizacionCotizacion extends Struct.CollectionTypeSchema {
+  collectionName: 'cotizaciones';
+  info: {
+    displayName: 'Cotizacion';
+    pluralName: 'cotizaciones';
+    singularName: 'cotizacion';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    cliente: Schema.Attribute.Relation<'manyToOne', 'api::cliente.cliente'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descuento: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    empleado: Schema.Attribute.Relation<'manyToOne', 'api::empleado.empleado'>;
+    estatus: Schema.Attribute.Enumeration<
+      ['borrador', 'enviada', 'aceptada', 'rechazada', 'expirada']
+    > &
+      Schema.Attribute.DefaultTo<'borrador'>;
+    fecha: Schema.Attribute.Date & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::cotizacion.cotizacion'
+    > &
+      Schema.Attribute.Private;
+    notas: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    total: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    vehiculo: Schema.Attribute.Relation<'manyToOne', 'api::vehiculo.vehiculo'>;
+    vigencia: Schema.Attribute.Date;
+  };
+}
+
 export interface ApiEmpleadoEmpleado extends Struct.CollectionTypeSchema {
   collectionName: 'empleados';
   info: {
@@ -678,6 +759,48 @@ export interface ApiEmpleadoEmpleado extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiFinanciamientoFinanciamiento
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'financiamientos';
+  info: {
+    displayName: 'Financiamiento';
+    pluralName: 'financiamientos';
+    singularName: 'financiamiento';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    cliente: Schema.Attribute.Relation<'manyToOne', 'api::cliente.cliente'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    enganche: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    estatus: Schema.Attribute.Enumeration<
+      ['solicitado', 'aprobado', 'rechazado', 'activo', 'liquidado']
+    > &
+      Schema.Attribute.DefaultTo<'solicitado'>;
+    fecha_fin: Schema.Attribute.Date;
+    fecha_inicio: Schema.Attribute.Date;
+    institucion: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::financiamiento.financiamiento'
+    > &
+      Schema.Attribute.Private;
+    mensualidad: Schema.Attribute.Decimal;
+    monto_financiado: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    plazo_meses: Schema.Attribute.Integer & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    tasa_interes: Schema.Attribute.Decimal;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    venta: Schema.Attribute.Relation<'oneToOne', 'api::venta.venta'>;
+  };
+}
+
 export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   collectionName: 'globals';
   info: {
@@ -707,6 +830,102 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiLeadLead extends Struct.CollectionTypeSchema {
+  collectionName: 'leads';
+  info: {
+    displayName: 'Lead';
+    pluralName: 'leads';
+    singularName: 'lead';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    concesionaria: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::concesionaria.concesionaria'
+    >;
+    correo: Schema.Attribute.Email & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    empleado_asignado: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::empleado.empleado'
+    >;
+    estatus: Schema.Attribute.Enumeration<
+      ['nuevo', 'contactado', 'convertido', 'descartado']
+    > &
+      Schema.Attribute.DefaultTo<'nuevo'>;
+    fecha_contacto: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::lead.lead'> &
+      Schema.Attribute.Private;
+    mensaje: Schema.Attribute.Text;
+    nombre: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    telefono: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    vehiculo_interes: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::vehiculo.vehiculo'
+    >;
+  };
+}
+
+export interface ApiOrdenServicioOrdenServicio
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'orden_servicios';
+  info: {
+    displayName: 'OrdenServicio';
+    pluralName: 'orden-servicios';
+    singularName: 'orden-servicio';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    cliente: Schema.Attribute.Relation<'manyToOne', 'api::cliente.cliente'>;
+    concesionaria: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::concesionaria.concesionaria'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descripcion_problema: Schema.Attribute.Text & Schema.Attribute.Required;
+    diagnostico: Schema.Attribute.Text;
+    empleado: Schema.Attribute.Relation<'manyToOne', 'api::empleado.empleado'>;
+    estatus: Schema.Attribute.Enumeration<
+      ['recibido', 'en_proceso', 'listo', 'entregado', 'cancelado']
+    > &
+      Schema.Attribute.DefaultTo<'recibido'>;
+    fecha_entrada: Schema.Attribute.Date & Schema.Attribute.Required;
+    fecha_salida: Schema.Attribute.Date;
+    kilometraje_entrada: Schema.Attribute.Integer;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::orden-servicio.orden-servicio'
+    > &
+      Schema.Attribute.Private;
+    mano_obra: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    notas: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    refacciones: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::refaccion.refaccion'
+    >;
+    total: Schema.Attribute.Decimal;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    vehiculo: Schema.Attribute.Relation<'manyToOne', 'api::vehiculo.vehiculo'>;
   };
 }
 
@@ -1375,10 +1594,15 @@ declare module '@strapi/strapi' {
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
       'api::category.category': ApiCategoryCategory;
+      'api::cita.cita': ApiCitaCita;
       'api::cliente.cliente': ApiClienteCliente;
       'api::concesionaria.concesionaria': ApiConcesionariaConcesionaria;
+      'api::cotizacion.cotizacion': ApiCotizacionCotizacion;
       'api::empleado.empleado': ApiEmpleadoEmpleado;
+      'api::financiamiento.financiamiento': ApiFinanciamientoFinanciamiento;
       'api::global.global': ApiGlobalGlobal;
+      'api::lead.lead': ApiLeadLead;
+      'api::orden-servicio.orden-servicio': ApiOrdenServicioOrdenServicio;
       'api::refaccion.refaccion': ApiRefaccionRefaccion;
       'api::vehiculo.vehiculo': ApiVehiculoVehiculo;
       'api::venta.venta': ApiVentaVenta;

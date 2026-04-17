@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "financiamientos",
+  "info": {
+    "singularName": "financiamiento",
+    "pluralName": "financiamientos",
+    "displayName": "Financiamiento"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "institucion":      { "type": "string",  "required": true },
+    "monto_financiado": { "type": "decimal", "required": true },
+    "enganche":         { "type": "decimal", "default": 0 },
+    "plazo_meses":      { "type": "integer", "required": true },
+    "tasa_interes":     { "type": "decimal" },
+    "mensualidad":      { "type": "decimal" },
+    "fecha_inicio":     { "type": "date" },
+    "fecha_fin":        { "type": "date" },
+    "estatus": {
+      "type": "enumeration",
+      "enum": ["solicitado","aprobado","rechazado","activo","liquidado"],
+      "default": "solicitado"
+    },
+    "venta":   { "type": "relation", "relation": "oneToOne",  "target": "api::venta.venta" },
+    "cliente": { "type": "relation", "relation": "manyToOne", "target": "api::cliente.cliente" }
+  }
+}

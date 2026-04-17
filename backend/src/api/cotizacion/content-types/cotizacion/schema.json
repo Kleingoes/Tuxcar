@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cotizaciones",
+  "info": {
+    "singularName": "cotizacion",
+    "pluralName": "cotizaciones",
+    "displayName": "Cotizacion"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "fecha":     { "type": "date", "required": true },
+    "vigencia":  { "type": "date" },
+    "total":     { "type": "decimal", "required": true },
+    "descuento": { "type": "decimal", "default": 0 },
+    "estatus": {
+      "type": "enumeration",
+      "enum": ["borrador","enviada","aceptada","rechazada","expirada"],
+      "default": "borrador"
+    },
+    "notas": { "type": "text" },
+    "cliente":  { "type": "relation", "relation": "manyToOne", "target": "api::cliente.cliente" },
+    "vehiculo": { "type": "relation", "relation": "manyToOne", "target": "api::vehiculo.vehiculo" },
+    "empleado": { "type": "relation", "relation": "manyToOne", "target": "api::empleado.empleado" }
+  }
+}

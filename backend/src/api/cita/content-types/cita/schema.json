@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "citas",
+  "info": {
+    "singularName": "cita",
+    "pluralName": "citas",
+    "displayName": "Cita"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "fecha": { "type": "date", "required": true },
+    "hora":  { "type": "time", "required": true },
+    "tipo": {
+      "type": "enumeration",
+      "enum": ["test_drive","servicio","consulta","entrega"],
+      "required": true
+    },
+    "estatus": {
+      "type": "enumeration",
+      "enum": ["programada","completada","cancelada","no_asistio"],
+      "default": "programada"
+    },
+    "notas":         { "type": "text" },
+    "cliente":       { "type": "relation", "relation": "manyToOne", "target": "api::cliente.cliente" },
+    "vehiculo":      { "type": "relation", "relation": "manyToOne", "target": "api::vehiculo.vehiculo" },
+    "empleado":      { "type": "relation", "relation": "manyToOne", "target": "api::empleado.empleado" },
+    "concesionaria": { "type": "relation", "relation": "manyToOne", "target": "api::concesionaria.concesionaria" }
+  }
+}

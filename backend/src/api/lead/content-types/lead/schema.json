@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leads",
+  "info": {
+    "singularName": "lead",
+    "pluralName": "leads",
+    "displayName": "Lead"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre":   { "type": "string", "required": true },
+    "correo":   { "type": "email",  "required": true },
+    "telefono": { "type": "string" },
+    "mensaje":  { "type": "text" },
+    "estatus": {
+      "type": "enumeration",
+      "enum": ["nuevo","contactado","convertido","descartado"],
+      "default": "nuevo"
+    },
+    "fecha_contacto":    { "type": "datetime" },
+    "vehiculo_interes":  { "type": "relation", "relation": "manyToOne", "target": "api::vehiculo.vehiculo" },
+    "concesionaria":     { "type": "relation", "relation": "manyToOne", "target": "api::concesionaria.concesionaria" },
+    "empleado_asignado": { "type": "relation", "relation": "manyToOne", "target": "api::empleado.empleado" }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orden_servicios",
+  "info": {
+    "singularName": "orden-servicio",
+    "pluralName": "orden-servicios",
+    "displayName": "OrdenServicio"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "fecha_entrada":        { "type": "date", "required": true },
+    "fecha_salida":         { "type": "date" },
+    "descripcion_problema": { "type": "text", "required": true },
+    "diagnostico":          { "type": "text" },
+    "mano_obra":            { "type": "decimal", "default": 0 },
+    "total":                { "type": "decimal" },
+    "kilometraje_entrada":  { "type": "integer" },
+    "estatus": {
+      "type": "enumeration",
+      "enum": ["recibido","en_proceso","listo","entregado","cancelado"],
+      "default": "recibido"
+    },
+    "notas":         { "type": "text" },
+    "cliente":       { "type": "relation", "relation": "manyToOne", "target": "api::cliente.cliente" },
+    "vehiculo":      { "type": "relation", "relation": "manyToOne", "target": "api::vehiculo.vehiculo" },
+    "empleado":      { "type": "relation", "relation": "manyToOne", "target": "api::empleado.empleado" },
+    "concesionaria": { "type": "relation", "relation": "manyToOne", "target": "api::concesionaria.concesionaria" },
+    "refacciones":   { "type": "relation", "relation": "manyToMany", "target": "api::refaccion.refaccion" }
+  }
+}
