@@ -848,7 +848,7 @@ export interface ApiVentaVenta extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::venta.venta'> &
       Schema.Attribute.Private;
     metodo_pago: Schema.Attribute.Enumeration<
-      ['efectivo', 'tarjeta ', 'financiamiento']
+      ['efectivo', 'tarjeta', 'financiamiento']
     >;
     notas: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
