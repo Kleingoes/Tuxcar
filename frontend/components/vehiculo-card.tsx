@@ -48,12 +48,12 @@ export default function VehiculoCard({ v }: { v: Vehiculo }) {
             )}
           </div>
           <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
-            <span>🏷️ {v.marca}</span>
-            <span>📅 {v.anio}</span>
-            <span>⚙️ {v.transmision}</span>
-            <span>⛽ {v.combustible}</span>
+            <span> {v.marca}</span>
+            <span> {v.anio}</span>
+            <span> {v.transmision}</span>
+            <span> {v.combustible}</span>
             {v.kilometraje != null && (
-              <span className="col-span-2">🛣️ {v.kilometraje.toLocaleString('es-MX')} km</span>
+              <span className="col-span-2"> {v.kilometraje.toLocaleString('es-MX')} km</span>
             )}
           </div>
           {v.concesionaria && (

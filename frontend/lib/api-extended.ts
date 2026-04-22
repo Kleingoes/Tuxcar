@@ -1,7 +1,4 @@
 // lib/api-extended.ts
-// Funciones adicionales para el backend de Tuxcar
-// El api.ts original del proyecto NO fue modificado
-
 import { Vehiculo, Refaccion } from './types';
 
 const API_URL   = process.env.NEXT_PUBLIC_API_URL   ?? 'http://localhost:1337';
@@ -24,8 +21,7 @@ export async function getVehiculosFiltrados(filtros: {
     const params = new URLSearchParams();
     params.set('populate', '*');
     params.set('pagination[limit]', '100');
-    if (filtros.tipo)
-      params.set('filters[tipo][$eq]', filtros.tipo);
+    if (filtros.tipo) params.set('filters[tipo][$eq]', filtros.tipo);
     if (filtros.disponible !== undefined)
       params.set('filters[disponible][$eq]', String(filtros.disponible));
 
@@ -89,6 +85,72 @@ export async function crearLead(data: {
     return res.ok;
   } catch (e) {
     console.error('crearLead:', e);
+    return false;
+  }
+}
+
+// ─── COTIZACIONES ─────────────────────────────────────────────────────────────
+
+export async function crearCotizacion(data: {
+  nombre: string;
+  correo: string;
+  telefono?: string;
+  notas?: string;
+  vehiculoDocumentId: string;
+}): Promise<boolean> {
+  try {
+    const vehiculo = await getVehiculoPorDocumentId(data.vehiculoDocumentId);
+    if (!vehiculo) return false;
+
+    // Buscar cliente por correo
+    const clienteRes = await fetch(
+      `${API_URL}/api/clientes?filters[correo][$eq]=${encodeURIComponent(data.correo)}`,
+      { headers: headers() }
+    );
+    const clienteJson = await clienteRes.json();
+    let clienteId: number | null = clienteJson.data?.[0]?.id ?? null;
+
+    // Crear cliente si no existe
+    if (!clienteId) {
+      const nuevoCliente = await fetch(`${API_URL}/api/clientes`, {
+        method: 'POST',
+        headers: headers(),
+        body: JSON.stringify({
+          data: {
+            nombre: data.nombre,
+            correo: data.correo,
+            Telefono: data.telefono ?? '',
+            fecha_registro: new Date().toISOString(),
+            tipo: 'individual',
+          }
+        }),
+      });
+      const nuevoClienteJson = await nuevoCliente.json();
+      clienteId = nuevoClienteJson.data?.id ?? null;
+    }
+    if (!clienteId) return false;
+
+    // Crear cotización
+    const cotizacion = await fetch(`${API_URL}/api/cotizaciones`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({
+        data: {
+          fecha: new Date().toISOString().split('T')[0],
+          vigencia: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          total: vehiculo.precio ?? 0,
+          descuento: 0,
+          estatus: 'borrador',
+          notas: data.notas ?? '',
+          cliente: { connect: [{ id: clienteId }] },
+          vehiculo: { connect: [{ id: vehiculo.id }] },
+        }
+      }),
+    });
+
+    return cotizacion.ok;
+  } catch (e) {
+    console.error('crearCotizacion:', e);
     return false;
   }
 }

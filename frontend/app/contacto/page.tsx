@@ -1,14 +1,29 @@
 'use client';
 // app/contacto/page.tsx
 import Navbar from '@/components/navbar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ArrowRight, MapPin, Phone, Mail, CheckCircle } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
 import { crearLead } from '@/lib/api-extended';
 
 export default function ContactoPage() {
-  const [form, setForm]     = useState({ nombre:'', correo:'', telefono:'', mensaje:'' });
+  const { isSignedIn, user, isLoaded } = useUser();
+
+  const [form, setForm]       = useState({ nombre:'', correo:'', telefono:'', mensaje:'' });
   const [loading, setLoading] = useState(false);
-  const [exito, setExito]   = useState(false);
-  const [error, setError]   = useState('');
+  const [exito, setExito]     = useState(false);
+  const [error, setError]     = useState('');
+
+  // Pre-llenar con datos de Clerk cuando hay sesión
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user) {
+      setForm((prev) => ({
+        ...prev,
+        nombre: prev.nombre || user.fullName || '',
+        correo: prev.correo || user.primaryEmailAddress?.emailAddress || '',
+      }));
+    }
+  }, [isLoaded, isSignedIn, user]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -17,75 +32,152 @@ export default function ContactoPage() {
     const ok = await crearLead(form);
     setLoading(false);
     if (ok) { setExito(true); setForm({ nombre:'', correo:'', telefono:'', mensaje:'' }); }
-    else setError('Hubo un problema al enviar. Intenta de nuevo.');
+    else setError('No se pudo enviar el mensaje. Por favor intenta de nuevo.');
   }
 
+  const inputClass = `
+    w-full px-4 py-3 rounded-xl text-sm
+    bg-zinc-50 dark:bg-zinc-900
+    border border-zinc-200 dark:border-zinc-700
+    text-zinc-900 dark:text-zinc-100
+    placeholder-zinc-400 dark:placeholder-zinc-600
+    focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500
+    transition-colors
+  `;
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-white dark:bg-zinc-950">
       <Navbar />
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Contáctanos</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Un asesor te contactará a la brevedad</p>
+      <main className="max-w-6xl mx-auto px-4 py-12">
+
+        <div className="mb-14">
+          <p className="text-xs font-semibold tracking-[0.2em] uppercase text-zinc-400 dark:text-zinc-500 mb-2">
+            Atención al cliente
+          </p>
+          <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-3">Contáctanos</h1>
+          <p className="text-zinc-500 dark:text-zinc-400 max-w-md text-base leading-relaxed">
+            Déjanos tus datos y un asesor se pondrá en contacto contigo a la brevedad.
+          </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
-          {exito ? (
-            <div className="text-center py-8">
-              <p className="text-5xl mb-4">✅</p>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">¡Mensaje enviado!</h2>
-              <p className="text-gray-500 dark:text-gray-400">Un asesor se pondrá en contacto contigo pronto.</p>
-              <button onClick={() => setExito(false)} className="mt-4 text-sm text-gray-500 underline">
-                Enviar otro mensaje
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {[
-                { key: 'nombre',   label: 'Nombre completo',    type: 'text',  placeholder: 'Juan Pérez',       required: true },
-                { key: 'correo',   label: 'Correo electrónico', type: 'email', placeholder: 'juan@correo.com',  required: true },
-                { key: 'telefono', label: 'Teléfono',           type: 'tel',   placeholder: '961 123 4567',     required: false },
-              ].map((f) => (
-                <div key={f.key}>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1">
-                    {f.label} {f.required && <span className="text-red-500">*</span>}
-                  </label>
-                  <input type={f.type} value={(form as any)[f.key]} placeholder={f.placeholder}
-                    onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" />
-                </div>
-              ))}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-              <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1">Mensaje</label>
-                <textarea rows={4} value={form.mensaje}
-                  placeholder="¿En qué vehículo estás interesado? ¿Necesitas financiamiento?"
-                  onChange={(e) => setForm({ ...form, mensaje: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white resize-none" />
+          {/* Formulario */}
+          <div className="lg:col-span-2">
+
+            {/* Badge de sesión */}
+            {isSignedIn && !exito && (
+              <div className="mb-5 flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 px-4 py-2.5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-900/30 w-fit">
+                <CheckCircle size={13} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
+                <span>Datos pre-llenados desde tu cuenta</span>
               </div>
+            )}
 
-              {error && <p className="text-sm text-red-500">{error}</p>}
+            {exito ? (
+              <div className="py-16 text-center">
+                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-5">
+                  <CheckCircle size={20} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Mensaje recibido</h2>
+                <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-6">
+                  Gracias por contactarnos. Un asesor te escribirá pronto.
+                </p>
+                <button onClick={() => setExito(false)}
+                  className="text-sm text-zinc-400 underline underline-offset-4 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
+                  Enviar otro mensaje
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2">
+                      Nombre completo <span className="text-red-400">*</span>
+                    </label>
+                    <input type="text" value={form.nombre} placeholder="Juan Pérez"
+                      onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+                      className={inputClass} />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2">
+                      Correo electrónico <span className="text-red-400">*</span>
+                    </label>
+                    <input type="email" value={form.correo} placeholder="juan@correo.com"
+                      onChange={(e) => setForm({ ...form, correo: e.target.value })}
+                      className={inputClass} />
+                  </div>
+                </div>
 
-              <button type="submit" disabled={loading}
-                className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-xl font-medium hover:opacity-80 transition-opacity disabled:opacity-50">
-                {loading ? 'Enviando...' : 'Enviar mensaje'}
-              </button>
-            </form>
-          )}
-        </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2">
+                    Teléfono
+                  </label>
+                  <input type="tel" value={form.telefono} placeholder="961 123 4567"
+                    onChange={(e) => setForm({ ...form, telefono: e.target.value })}
+                    className={inputClass} />
+                </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-          {[
-            { icon:'📍', label:'Ubicación', value:'Tuxtla Gutiérrez, Chiapas' },
-            { icon:'📞', label:'Teléfono',  value:'961 123 4567' },
-            { icon:'✉️', label:'Correo',    value:'ventas@tuxcar.com' },
-          ].map((c) => (
-            <div key={c.label} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-center">
-              <p className="text-2xl mb-1">{c.icon}</p>
-              <p className="text-xs text-gray-400">{c.label}</p>
-              <p className="text-sm font-medium text-gray-900 dark:text-white">{c.value}</p>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2">
+                    Mensaje
+                  </label>
+                  <textarea rows={5} value={form.mensaje}
+                    placeholder="¿En qué vehículo estás interesado? ¿Tienes alguna pregunta sobre financiamiento o servicio?"
+                    onChange={(e) => setForm({ ...form, mensaje: e.target.value })}
+                    className={`${inputClass} resize-none`} />
+                </div>
+
+                {error && <p className="text-sm text-red-500">{error}</p>}
+
+                <button type="submit" disabled={loading}
+                  className="inline-flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50">
+                  {loading ? 'Enviando...' : 'Enviar mensaje'}
+                  {!loading && <ArrowRight size={14} strokeWidth={2} />}
+                </button>
+              </form>
+            )}
+          </div>
+
+          {/* Info de contacto */}
+          <div className="space-y-4">
+            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-zinc-400 dark:text-zinc-500 mb-6">
+              Información de contacto
+            </p>
+
+            {[
+              { Icon: MapPin, label: 'Dirección',  value: 'Blvd. Andrés Serra Rojas 1200\nTuxtla Gutiérrez, Chiapas' },
+              { Icon: Phone,  label: 'Teléfono',   value: '961 123 4567' },
+              { Icon: Mail,   label: 'Correo',     value: 'ventas@tuxcar.com' },
+            ].map(({ Icon, label, value }) => (
+              <div key={label} className="flex items-start gap-4 p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0">
+                  <Icon size={14} strokeWidth={1.5} className="text-zinc-500 dark:text-zinc-400" />
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-0.5">{label}</p>
+                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 whitespace-pre-line">{value}</p>
+                </div>
+              </div>
+            ))}
+
+            <div className="mt-6 p-4 rounded-xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
+              <p className="text-[10px] uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2">Horario de atención</p>
+              <div className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+                <div className="flex justify-between">
+                  <span>Lunes a Viernes</span>
+                  <span className="font-medium text-zinc-900 dark:text-zinc-100">9:00 — 19:00</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Sábado</span>
+                  <span className="font-medium text-zinc-900 dark:text-zinc-100">9:00 — 14:00</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Domingo</span>
+                  <span className="text-zinc-400">Cerrado</span>
+                </div>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
       </main>
     </div>
