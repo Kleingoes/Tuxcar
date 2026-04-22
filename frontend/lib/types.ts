@@ -1,8 +1,9 @@
 // lib/types.ts
-// Tipos TypeScript para las colecciones de Tuxcar en Strapi
+// Tipos para Strapi v5 — campos directamente en el objeto (sin .attributes)
 
 export interface Vehiculo {
   id: number;
+  documentId: string;
   nombre: string;
   marca: string;
   modelo: string;
@@ -10,18 +11,21 @@ export interface Vehiculo {
   color: string;
   precio: number;
   kilometraje: number;
-  tipo: "sedan" | "suv" | "pickup" | "hatchback" | "coupe" | "van";
-  transmision: "automatica" | "manual";
-  combustible: "gasolina" | "diesel" | "hibrido" | "electrico";
+  tipo: string;
+  transmision: string;
+  combustible: string;
   puertas: number;
-  estatus: "disponible" | "vendido" | "reservado";
+  estatus: string;
   disponible: boolean;
   numero_serie: string;
+  descripcion?: string;
+  Imagen?: { id: number; url: string; name: string } | null;
   concesionaria?: Concesionaria;
 }
 
 export interface Concesionaria {
   id: number;
+  documentId: string;
   nombre: string;
   ciudad: string;
   Estado: string;
@@ -30,36 +34,15 @@ export interface Concesionaria {
   contacto: string;
 }
 
-export interface Cliente {
+export interface Refaccion {
   id: number;
+  documentId: string;
   nombre: string;
-  correo: string;
-  Telefono: string;
-  direccion: string;
-  fecha_registro: string;
-  tipo: "individual" | "empresa";
-}
-
-export interface Venta {
-  id: number;
-  fecha: string;
-  total: number;
-  estatus: "pendiente" | "completada" | "cancelada";
-  metodo_pago: "efectivo" | "tarjeta " | "financiamiento";
-  cantidad: number;
-  notas: string;
-  cliente?: Cliente;
-  vehiculo?: Vehiculo;
-}
-
-// Respuesta paginada de Strapi
-export interface StrapiResponse<T> {
-  data: T[];
-  meta: {
-    pagination: {
-      start: number;
-      limit: number;
-      total: number;
-    };
-  };
+  descripcion?: string;
+  precio: number;
+  stock: number;
+  marca: string;
+  categoria: string;
+  numero_refaccion: string;
+  concesionaria?: Concesionaria;
 }
