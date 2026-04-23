@@ -50,7 +50,6 @@ export default async function VehiculoDetallePage({ params }: Props) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-          {/* Imagen */}
           <div>
             <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900">
               {imgUrl ? (
@@ -64,7 +63,6 @@ export default async function VehiculoDetallePage({ params }: Props) {
             </div>
           </div>
 
-          {/* Info */}
           <div className="flex flex-col">
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-3">
@@ -149,23 +147,26 @@ export default async function VehiculoDetallePage({ params }: Props) {
           </div>
         </div>
 
-        {/* Formulario de cotización (con autenticación progresiva) */}
+        {/* Cotización con calculadora + PDF */}
         {disponible && (
           <div className="mt-16 pt-12 border-t border-zinc-100 dark:border-zinc-800">
-            <div className="max-w-2xl">
+            <div className="max-w-3xl">
               <p className="text-xs uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-2">
-                Solicitar cotización
+                Cotización personalizada
               </p>
               <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-                ¿Te interesa este vehículo?
+                Calcula tu financiamiento
               </h2>
               <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-8">
-                Déjanos tus datos y un asesor preparará una cotización personalizada para ti.
+                Ajusta el enganche, plazo y tasa para ver tu mensualidad estimada. Al generar la cotización podrás descargar un PDF profesional.
               </p>
               <FormCotizacion
                 vehiculoDocumentId={documentId}
                 vehiculoNombre={v.nombre}
-                vehiculoPrecio={v.precio}
+                vehiculoPrecio={v.precio ?? 0}
+                vehiculoMarca={v.marca}
+                vehiculoModelo={v.modelo}
+                vehiculoAnio={v.anio}
               />
             </div>
           </div>
