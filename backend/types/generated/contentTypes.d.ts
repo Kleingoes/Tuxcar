@@ -1022,7 +1022,6 @@ export interface ApiVehiculoVehiculo extends Struct.CollectionTypeSchema {
     numero_serie: Schema.Attribute.String;
     precio: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
-      Schema.Attribute.Unique &
       Schema.Attribute.SetMinMax<
         {
           min: 0;

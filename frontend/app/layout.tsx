@@ -6,7 +6,7 @@ import Footer from "@/components/footer";
 import { ThemeProvider } from "@/components/theme-provide";
 import { ClerkProvider } from "@clerk/nextjs";
 
-const outfit = Outfit({subsets: ["latin"],});
+const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Tuxcar",
@@ -19,20 +19,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={outfit.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={outfit.className}>
+        <ClerkProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange>
-            <NextTopLoader color="#000"/>
+            defaultTheme="dark"
+            enableSystem={false}
+            disableTransitionOnChange
+          >
+            <NextTopLoader color="#D97706" />
             {children}
             <Footer />
           </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

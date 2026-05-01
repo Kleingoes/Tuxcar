@@ -84,7 +84,7 @@
     "precio": {
       "type": "decimal",
       "required": true,
-      "unique": true,
+      "unique": false,
       "default": 0,
       "min": 0
     },
