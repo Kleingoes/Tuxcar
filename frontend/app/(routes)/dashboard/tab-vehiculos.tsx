@@ -1,8 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getVehiculosAdmin, eliminarVehiculo, editarVehiculo } from '@/lib/api-admin';
+import { exportarVehiculos } from '@/lib/export-excel';
 import { getImagenUrl } from '@/lib/api-extended';
 import Image from 'next/image';
+import ExportButton from '@/components/export-button';
 import { Loader2, ImageOff, Trash2, Pencil, X, Check, AlertTriangle } from 'lucide-react';
 
 interface Props { esSuperAdmin: boolean; }
@@ -41,7 +43,10 @@ export default function TabVehiculos({ esSuperAdmin }: Props) {
 
   return (
     <div>
-      <p className="text-sm text-zinc-500 mb-4">{vehiculos.length} vehículos registrados</p>
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-sm text-zinc-500">{vehiculos.length} vehículos registrados</p>
+        <ExportButton onClick={() => exportarVehiculos(vehiculos)} />
+      </div>
 
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
@@ -83,7 +88,7 @@ export default function TabVehiculos({ esSuperAdmin }: Props) {
                   <td className="px-4 py-3">{isEd ? <select value={editForm.estatus} onChange={(e) => setEditForm({...editForm, estatus: e.target.value, disponible: e.target.value === 'disponible'})} className="bg-zinc-800 border border-zinc-700 text-white text-xs px-2 py-1"><option value="disponible">Disponible</option><option value="vendido">Vendido</option><option value="reservado">Reservado</option></select> : <span className={`text-[11px] font-semibold tracking-wider uppercase px-2 py-0.5 ${v.disponible ? 'bg-emerald-900/30 text-emerald-400' : 'bg-zinc-800 text-zinc-500'}`}>{v.estatus}</span>}</td>
                   {esSuperAdmin && (
                     <td className="px-4 py-3"><div className="flex items-center gap-1">
-                      {isEd ? (<><button onClick={() => handleEdit(v.documentId)} disabled={actionLoading} className="w-8 h-8 flex items-center justify-center text-emerald-400 hover:bg-emerald-900/30 transition-colors"><Check size={14} strokeWidth={2} /></button><button onClick={() => setEditando(null)} className="w-8 h-8 flex items-center justify-center text-zinc-500 hover:bg-zinc-800 transition-colors"><X size={14} strokeWidth={2} /></button></>) : (<><button onClick={() => startEdit(v)} className="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-amber-500 hover:bg-amber-600/10 transition-colors" title="Editar"><Pencil size={13} strokeWidth={1.5} /></button><button onClick={() => setConfirmDelete(v.documentId)} className="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition-colors" title="Eliminar"><Trash2 size={13} strokeWidth={1.5} /></button></>)}
+                      {isEd ? (<><button onClick={() => handleEdit(v.documentId)} disabled={actionLoading} className="w-8 h-8 flex items-center justify-center text-emerald-400 hover:bg-emerald-900/30 transition-colors"><Check size={14} strokeWidth={2} /></button><button onClick={() => setEditando(null)} className="w-8 h-8 flex items-center justify-center text-zinc-500 hover:bg-zinc-800 transition-colors"><X size={14} strokeWidth={2} /></button></>) : (<><button onClick={() => startEdit(v)} className="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-amber-500 hover:bg-amber-600/10 transition-colors"><Pencil size={13} strokeWidth={1.5} /></button><button onClick={() => setConfirmDelete(v.documentId)} className="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition-colors"><Trash2 size={13} strokeWidth={1.5} /></button></>)}
                     </div></td>
                   )}
                 </tr>
