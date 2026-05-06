@@ -981,7 +981,7 @@ export interface ApiVehiculoVehiculo extends Struct.CollectionTypeSchema {
     singularName: 'vehiculo';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     anio: Schema.Attribute.BigInteger;
